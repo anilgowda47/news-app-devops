@@ -17,7 +17,7 @@ pipeline {
                     echo "Setting project version to ${version}"
 
                     sh """
-                        cd news-app-devops
+                        cd ${env.WORKSPACE}
                         mvn versions:set -DnewVersion=${version}
                         mvn clean package
                     """
@@ -27,7 +27,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh "cd news-app-devops && mvn test"
+                sh "cd ${env.WORKSPACE} && mvn test"
             }
         }
 
@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     // Define WAR file path
-                    def WAR_FILE = "news-app-devops/target/news-app.war"
+                    def WAR_FILE = "${env.WORKSPACE}/target/news-app.war"
 
                     // Current timestamp
                     def currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date())
@@ -61,7 +61,16 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 sh """
-                    echo "tomcat started"
+                    echo 'Cleaning old deployment'
+                    sudo rm -rf /opt/tomcat10/webapps/news-app /opt/tomcat10/webapps/news-app*.war
+
+                    echo 'Copying new WAR'
+                    sudo cp ${env.WORKSPACE}/target/news-app.war /opt/tomcat10/webapps/
+
+                    echo 'Restarting Tomcat'
+                    sudo /opt/tomcat10/bin/shutdown.sh || true
+                    sleep 2
+                    sudo /opt/tomcat10/bin/startup.sh
                 """
             }
         }
