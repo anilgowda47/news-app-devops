@@ -32,35 +32,48 @@ pipeline {
         }
 
         stage('Push the artifacts into JFrog Artifactory') {
-    steps {
-        script {
-            // Define WAR file path
-            def WAR_FILE = "${env.WORKSPACE}/target/news-app.war"
+            steps {
+                script {
+                    // Define WAR file path
+                    def WAR_FILE = "${env.WORKSPACE}/target/news-app.war"
 
-            // Current timestamp
-            def currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date())
+                    // Current timestamp
+                    def currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date())
 
-            // Path inside Artifactory
-            def targetPath = "feature_release1/${currentDate}/"
+                    // Path inside Artifactory
+                    def targetPath = "feature_release1/${currentDate}/"
 
-            // New Artifactory syntax
-            def server = Artifactory.server('Jfrog')
-            def buildInfo = Artifactory.newBuildInfo()
-
-            server.upload(
-                spec: """{
-                    "files": [
-                        {
-                            "pattern": "${WAR_FILE}",
-                            "target": "${targetPath}"
-                        }
-                    ]
-                }""",
-                buildInfo: buildInfo
-            )
-
-            // Publish build info (optional)
-            server.publishBuildInfo(buildInfo)
+                    rtUpload(
+                        serverId: "Jfrog",
+                        spec: """{
+                            "files": [
+                                {
+                                    "pattern": "${WAR_FILE}",
+                                    "target": "${targetPath}"
+                                }
+                            ]
+                        }"""
+                    )
+                }
+            }
         }
-    }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                sh """
+                    echo 'Cleaning old deployment'
+                    sudo rm -rf /opt/tomcat10/webapps/news-app /opt/tomcat10/webapps/news-app*.war
+
+                    echo 'Copying new WAR'
+                    sudo cp ${env.WORKSPACE}/target/news-app.war /opt/tomcat10/webapps/
+
+                    echo 'Restarting Tomcat'
+                    sudo /opt/tomcat10/bin/shutdown.sh || true
+                    sleep 2
+                    sudo /opt/tomcat10/bin/startup.sh
+                """
+            }
+        }
+
+    } // end stages
 }
