@@ -33,15 +33,7 @@ pipeline {
 
         stage('Push the artifacts into JFrog Artifactory') {
             steps {
-                script {
-                    // Define WAR file path
-                    def WAR_FILE = "${env.WORKSPACE}/target/news-app.war"
-
-                    // Current timestamp
-                    def currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date())
-
-                    // Path inside Artifactory
-                    def targetPath = "feature_release1/${currentDate}/"
+                echo "uploading into artifact" 
 
                     rtUpload(
                         serverId: "Jfrog",
