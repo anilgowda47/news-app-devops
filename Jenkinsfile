@@ -17,7 +17,7 @@ pipeline {
                     echo "Setting project version to ${version}"
 
                     sh """
-                        cd ${env.WORKSPACE}
+                        cd news-app-devops
                         mvn versions:set -DnewVersion=${version}
                         mvn clean package
                     """
@@ -27,7 +27,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh "cd ${env.WORKSPACE} && mvn test"
+                sh "cd news-app-devops && mvn test"
             }
         }
 
@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     // Define WAR file path
-                    def WAR_FILE = "${env.WORKSPACE}/target/news-app.war"
+                    def WAR_FILE = "news-app-devops/target/news-app.war"
 
                     // Current timestamp
                     def currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date())
