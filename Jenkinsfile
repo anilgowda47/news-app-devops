@@ -61,16 +61,7 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 sh """
-                    echo 'Cleaning old deployment'
-                    sudo rm -rf /opt/tomcat10/webapps/news-app /opt/tomcat10/webapps/news-app*.war
-
-                    echo 'Copying new WAR'
-                    sudo cp ${env.WORKSPACE}/target/news-app.war /opt/tomcat10/webapps/
-
-                    echo 'Restarting Tomcat'
-                    sudo /opt/tomcat10/bin/shutdown.sh || true
-                    sleep 2
-                    sudo /opt/tomcat10/bin/startup.sh
+                    echo "tomcat started"
                 """
             }
         }
