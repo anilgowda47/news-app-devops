@@ -33,19 +33,29 @@ pipeline {
 
         stage('Push the artifacts into JFrog Artifactory') {
             steps {
-                echo "uploading into artifact" 
+                script {
 
-                    rtUpload(
-                        serverId: "Jfrog",
-                        spec: """{
-                            "files": [
-                                {
-                                    "pattern": "${WAR_FILE}",
-                                    "target": "${targetPath}"
-                                }
-                            ]
-                        }"""
-                    )
+                    def warFile = "${env.WORKSPACE}/target/news-app.war"
+                    def currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date())
+                    def targetPath = "feature_release1/${currentDate}/"
+
+                    // Connect to the JFrog instance registered in Jenkins
+                    def server = Artifactory.server('Jfrog')
+
+                    // Upload Spec
+                    def uploadSpec = """{
+                        "files": [
+                            {
+                                "pattern": "${warFile}",
+                                "target": "${targetPath}"
+                            }
+                        ]
+                    }"""
+
+                    // Upload the file
+                    server.upload(uploadSpec)
+
+                    echo "Artifact uploaded to JFrog at path: ${targetPath}"
                 }
             }
         }
@@ -67,5 +77,5 @@ pipeline {
             }
         }
 
-    } // end stages
+    }
 }
