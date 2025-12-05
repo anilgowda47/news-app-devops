@@ -44,7 +44,7 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 sh """
-                    echo 'Cleaning old deployment'
+                    echo 'Cleaning the old deployment'
                     sudo rm -rf /opt/tomcat10/webapps/news-app /opt/tomcat10/webapps/news-app*.war
 
                     echo 'Copying new WAR'
