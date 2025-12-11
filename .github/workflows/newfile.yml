@@ -74,11 +74,11 @@ jobs:
 
       - name: Status check
         run: |
-          curl -I http://35.154.118.85:8088/news-app/ || true
+          curl -I http://13.233.178.33:8088/news-app/ || true
 
       - name: Verify app content
         run: |
-          RESPONSE=$(curl -s http://35.154.118.85:8088/news-app/)
+          RESPONSE=$(curl -s http://13.233.178.33:8088/news-app/)
           echo "$RESPONSE" | grep "Welcome to news App" || true
           echo "$RESPONSE" | grep "Live News Categories" || true
           echo "$RESPONSE" | grep "Top Headlines" || true
