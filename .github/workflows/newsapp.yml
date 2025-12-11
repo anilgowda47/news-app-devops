@@ -84,4 +84,4 @@ jobs:
           echo "$RESPONSE" | grep "Top Headlines" || true
           sleep 60
           echo "Stopping Tomcat"
-          sudo /opt/tomcat10/bin/shutdown.sh || true 
+          sudo /opt/tomcat10/bin/shutdown.sh || true
