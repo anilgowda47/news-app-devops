@@ -1,4 +1,4 @@
-name: news_app
+name: new_app
 
 on:
   push:
