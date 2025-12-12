@@ -127,4 +127,4 @@ jobs:
           echo "$RESPONSE" | grep "Top Headlines" || echo "❌ Missing: Headlines"
 
           echo "Stopping Tomcat after verification..."
-          sudo /opt/tomcat10/bin/shutdown.sh || true 
+          sudo /opt/tomcat10/bin/shutdown.sh || true
