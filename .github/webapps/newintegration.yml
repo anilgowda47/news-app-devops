@@ -122,7 +122,7 @@ jobs:
           echo "Validating application output..."
           RESPONSE=$(curl -s http://65.2.141.61:8080/news-app/)
 
-          echo "$RESPONSE" | grep "Welcome to news App" || echo "❌ Missing: Welcome message"
+          echo "$RESPONSE" | grep "Welcome to news App" || echo "❌ Missing: Welcome  message"
           echo "$RESPONSE" | grep "Live News Categories" || echo "❌ Missing: News categories"
           echo "$RESPONSE" | grep "Top Headlines" || echo "❌ Missing: Headlines"
 
